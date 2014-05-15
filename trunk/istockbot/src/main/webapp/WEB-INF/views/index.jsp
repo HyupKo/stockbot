@@ -8,6 +8,8 @@
 <title>i stock bot</title>
 </head>
 <body>
-<h1>Be rich with stock.</h1>
+<h1>
+	<a href="${oauthUrl }">Go to OAuth URL.</a>
+</h1>
 </body>
 </html>
