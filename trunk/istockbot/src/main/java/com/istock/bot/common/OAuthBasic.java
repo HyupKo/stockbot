@@ -25,8 +25,8 @@ public class OAuthBasic {
 	final static String ACCESS_TOKEN_URL = "https://apis.daum.net/oauth/accessToken";
 	final static String AUTHORIZE_URL = "https://apis.daum.net/oauth/authorize";
 
-	final static String CONSUMER_KEY = "62b295d8-3752-448a-9909-392492619cfc";
-	final static String CONSUMER_SECRET = "SXkDI7bPgjvEUwC8iSfQMABn53mtpiIm_FI6PoN4REYIS7-YaRMGbg00";
+	final static String CONSUMER_KEY = "3a7fb43d-67bf-414b-866b-af915eb4cc41";
+	final static String CONSUMER_SECRET = "i9hdtYG6zFQ-mk-fhn_qK2G4UBx25yY.9XglmbgJ-TGAkqff_pvJJw00";
 
 	final static String API_URL = "https://apis.daum.net";
 
