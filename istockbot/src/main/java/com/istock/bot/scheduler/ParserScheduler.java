@@ -1,7 +1,10 @@
 package com.istock.bot.scheduler;
 
 import java.io.IOException;
+import java.util.Map;
 
+import org.jsoup.Connection;
+import org.jsoup.Connection.Method;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -23,8 +26,21 @@ public class ParserScheduler {
 	 */
 	@Scheduled(fixedRate=5000)
 	private void parsePage() {
+		Connection.Response res;
+		Map<String, String> map = null;
 		try {
-			Document document = Jsoup.connect("http://cafe.daum.net/_c21_/shortcomment_read?grpid=17uHu&mgrpid=&fldid=GqjP&dataid=" + articleId + "&icontype=").get();
+			res = Jsoup
+					.connect("https://logins.daum.net/accounts/login.do")
+					.data("id", "lovelove0808", "pw", "sotkfkd")
+					.method(Method.POST).execute();
+			res.parse();
+			map = res.cookies();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+
+		try {
+			Document document = Jsoup.connect("http://cafe.daum.net/_c21_/shortcomment_read?grpid=17uHu&mgrpid=&fldid=GqjP&dataid=" + articleId + "&icontype=").cookies(map).get();
 			System.out.println(document.toString());
 			Elements elements = document.select("#commentDiv-" + articleId);
 			System.out.println(elements.size());

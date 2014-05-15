@@ -13,5 +13,13 @@ public interface IndexService {
 	 * @return {@link Map}
 	 */
 	public Map<String, String> getInfomation();
+	
+	/**
+	 * Get OAuth Url.
+	 * @return {@link String}
+	 */
+	public String getOAuthUrl();
+
+	public void setInstance(String oauthToken, String oauthVerifier);
 
 }
