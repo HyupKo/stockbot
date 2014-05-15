@@ -31,10 +31,11 @@ public class ParserScheduler {
 		try {
 			res = Jsoup
 					.connect("https://logins.daum.net/accounts/login.do")
-					.data("id", "lovelove0808", "pw", "sotkfkd")
+					.data("id", "istockbot", "pw", "qlalfqjsgh1!")
 					.method(Method.POST).execute();
 			res.parse();
 			map = res.cookies();
+			System.out.println(map.toString());
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
