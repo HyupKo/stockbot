@@ -24,11 +24,20 @@ public class IndexServiceImpl implements IndexService {
 		return null;
 	}
 
+	/**
+	 * Get OAuth Url.
+	 * @return {@link String}
+	 * @see com.istock.bot.service.IndexService#getOAuthUrl()
+	 */
 	@Override
 	public String getOAuthUrl() {
 		return OAuthBasic.getAuthUrl();
 	}
 
+	/**
+	 * Set Instance.
+	 * @see com.istock.bot.service.IndexService#setInstance(String oauthToken, String oauthVerifier)
+	 */
 	@Override
 	public void setInstance(String oauthToken, String oauthVerifier) {
 		OAuthBasic.setInstance(oauthToken, oauthVerifier);

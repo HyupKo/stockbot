@@ -20,6 +20,12 @@ public interface IndexService {
 	 */
 	public String getOAuthUrl();
 
+	/**
+	 * Set oauth instance.
+	 * 
+	 * @param oauthToken
+	 * @param oauthVerifier
+	 */
 	public void setInstance(String oauthToken, String oauthVerifier);
 
 }
