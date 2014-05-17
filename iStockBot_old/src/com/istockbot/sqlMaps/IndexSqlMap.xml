@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap 
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="index">
+	<typeAlias alias="twitterDmSend" type="com.istockbot.model.TwitterDmSendModel"/>
+	
+	<resultMap class="twitterDmSend" id="resultIndexStockInfo">
+		<result property="krCode" column="KR_CODE"/>
+		<result property="stockName" column="STOCK_NAME_KOR"/>
+		<result property="twitterId" column="TWITTER_ID"/>
+	</resultMap>
+	
+	<select id="selectSearchInfo" parameterClass="twitterDmSend" resultMap="resultIndexStockInfo">
+		SELECT A.KR_CODE, A.STOCK_NAME_KOR, B.TWITTER_ID
+		FROM STOCK_INFO A left join TWITTER_DM_SEND B
+		on A.KR_CODE = B.KR_CODE AND B.TWITTER_ID = #twitterId#
+		WHERE 1=1
+		<isNotEmpty property="krCode" prepend="AND">
+			A.KR_CODE LIKE CONCAT('%',#krCode#,'%')
+		</isNotEmpty>
+		<isNotEmpty property="stockName" prepend="AND">
+			A.STOCK_NAME_KOR LIKE CONCAT('%',#stockName#,'%')
+		</isNotEmpty>
+		<isEqual property="stockKind" compareValue="1" prepend="AND">
+			A.MARKET_SECTION = '유가증권시장상장'
+		</isEqual>
+		<isEqual property="stockKind" compareValue="2" prepend="AND">
+			A.MARKET_SECTION = '코스닥시장상장'
+		</isEqual>
+	</select>
+	
+	<resultMap class="twitterDmSend" id="resultInfoList">
+		<result property="twitterId" column="TWITTER_ID"/>
+		<result property="krCode" column="KR_CODE"/>
+		<result property="stockName" column="STOCK_NAME_KOR"/>
+		<result property="activateTime" column="ACTIVATE_TIME"/>
+	</resultMap>
+	
+	<select id="selectInfoList" parameterClass="twitterDmSend" resultMap="resultInfoList">
+		SELECT A.TWITTER_ID, A.KR_CODE, B.STOCK_NAME_KOR, A.ACTIVATE_TIME
+		FROM TWITTER_DM_SEND A, STOCK_INFO B 
+		WHERE A.KR_CODE = B.KR_CODE 
+			AND TWITTER_ID = #twitterId#
+	</select>
+	
+	<resultMap class="twitterDmSend" id="resultUserInfo">
+		<result property="twitterId" column="TWITTER_ID"/>
+		<result property="stQuantity" column="STOCK_QUANTITY"/>
+		<result property="stPrice" column="STOCK_PRICE"/>
+		<result property="stockName" column="STOCK_NAME_KOR"/>
+		<result property="activateTime" column="ACTIVATE_TIME"/>
+	</resultMap>
+	<select id="selectUserInfo" parameterClass="twitterDmSend" resultMap="resultUserInfo">
+		SELECT A.TWITTER_ID, A.STOCK_QUANTITY, A.STOCK_PRICE, A.ACTIVATE_TIME, B.STOCK_NAME_KOR
+		FROM TWITTER_DM_SEND A, STOCK_INFO B
+		WHERE A.KR_CODE = B.KR_CODE
+			AND A.TWITTER_ID = #twitterId#
+			AND A.KR_CODE = #krCode#
+	</select>
+	
+	<delete id="deleteCustTwitterInfo" parameterClass="twitterDmSend">
+		DELETE FROM TWITTER_DM_SEND
+		WHERE	TWITTER_ID = #twitterId#
+			AND	KR_CODE = #krCode#
+	</delete>
+	
+	<select id="selectCheckStockInfo" parameterClass="twitterDmSend" resultMap="resultInfoList">
+		SELECT	TWITTER_ID, KR_CODE, ACTIVATE_TIME, TWITTER_ID
+		FROM	TWITTER_DM_SEND
+		WHERE	TWITTER_ID = #twitterId#
+			AND	KR_CODE = #krCode#
+	</select>
+	
+	<insert id="insertStockInfo"  parameterClass="twitterDmSend">
+		INSERT INTO TWITTER_DM_SEND
+		VALUES (#twitterId#, #krCode#, #activateTime#, now(), 'SYSTEM', #stQuantity#, #stPrice#,'')
+	</insert>
+	
+	<update id="updateUserInfo" parameterClass="twitterDmSend">
+		UPDATE TWITTER_DM_SEND SET
+			STOCK_QUANTITY = #stQuantity#
+			, STOCK_PRICE = #stPrice#
+			, ACTIVATE_TIME = #activateTime#
+		WHERE KR_CODE = #krCode#
+			AND TWITTER_ID = #twitterId#
+	</update>
+</sqlMap>
