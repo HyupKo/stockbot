@@ -35,10 +35,10 @@ public class OAuthBasic {
 
 	final static String API_URL = "https://apis.daum.net";
 
-	// Service Provider 按眉 积己
+	// Service Provider 靸濎劚.
 	static OAuthProvider provider = new DefaultOAuthProvider(REQUEST_TOKEN_URL, ACCESS_TOKEN_URL, AUTHORIZE_URL);
 
-	// Consumer 按眉 积己
+	// Consumer 靸濎劚.
 	static OAuthConsumer consumer = new DefaultOAuthConsumer(CONSUMER_KEY, CONSUMER_SECRET);
 
 	/**
@@ -79,7 +79,7 @@ public class OAuthBasic {
 			URL url = new URL(API_URL + "/cafe/favorite_cafes.json");		
 			HttpURLConnection request = (HttpURLConnection) url.openConnection();
 
-			// oauth_signature 蔼阑 掘嚼聪促.
+			// oauth_signature 氚涭晞鞓り赴.
 			consumer.sign(request);		
 
 			request.connect();
