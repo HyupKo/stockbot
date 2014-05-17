@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap 
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="job">
+
+	<typeAlias alias="twitterDmSend" type="com.ibot.model.TwitterDmSendModel"/>
+	
+	<resultMap class="twitterDmSend" id="resultSendDmSchedual">
+		<result property="twitterId" column="TWITTER_ID"/>
+		<result property="krCode" column="KR_CODE"/>
+	</resultMap>
+
+	<select id="selectSendDmSchedual" resultMap="resultSendDmSchedual">
+		SELECT TWITTER_ID, GROUP_CONCAT(KR_CODE SEPARATOR ':') AS KR_CODE, GROUP_CONCAT(ACTIVATE_TIME SEPARATOR ':') AS ACTIVATE_TIME
+		FROM   TWITTER_DM_SEND
+		WHERE	ACTIVATE_TIME = '1'
+		GROUP BY TWITTER_ID
+		ORDER BY TWITTER_ID
+	</select>
+</sqlMap>
