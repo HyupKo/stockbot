@@ -1,0 +1,36 @@
+* {margin:0px; auto;}
+#wrap{
+	width:800px;
+	margin-left:auto;
+	margin-right:auto;
+	border:#6B71BD solid 1px;
+	font-size:12px;
+}
+#head{height:70px;background:#eee;padding-top:5px;padding-left:2px;}
+#mention,#body,#body1,#body2,#body3,#stockCdRslt{float:left;}
+#mention,#body,#stockCdRslt{height:100%;}
+#mention,#stockCdRslt{width:478px;background:#ffffff; border:#6B71BD solid 1px;}
+#body{width:318px; border:#6B71BD solid 1px;}
+#body1{width:98%;height:180px;background:#ffffff;padding-right:2px;padding-left:2px;padding-top:2px;}
+#body2{width:98%;height:300px;background:#ffffff;padding-right:2px;padding-left:2px;padding-top:2px;}
+#body3{width:98%;height:250px;background:#ffffff;padding-right:2px;padding-left:2px;padding-top:2px;}
+#ment{padding-right:2px;padding-left:2px;padding-top:2px;}
+
+#overlay {
+     position: absolute;
+     left: 0px;
+     top: 0px;
+     width:100%;
+     height:100%;
+     z-index: 9999;
+     font-size:12px;
+     background-color:rgba(0,0,0,0.5);
+     display:none;
+}
+#overlay div {
+     width:300px;
+     margin: 300px auto;
+     background-color: #fff;
+     border:1px solid #000;
+     padding:15px;
+}
