@@ -18,6 +18,11 @@ import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.exception.OAuthNotAuthorizedException;
 
+/**
+ * OAuth Class.
+ * @author Administrator
+ *
+ */
 @Component
 public class OAuthBasic {
 
@@ -36,6 +41,10 @@ public class OAuthBasic {
 	// Consumer °´Ã¼ »ý¼º
 	static OAuthConsumer consumer = new DefaultOAuthConsumer(CONSUMER_KEY, CONSUMER_SECRET);
 
+	/**
+	 * Get Auth Url.
+	 * @return {@link String}
+	 */
 	public static String getAuthUrl() {
 		String authUrl = "";
 		
@@ -54,6 +63,11 @@ public class OAuthBasic {
 		return authUrl;
 	}
 	
+	/**
+	 * Set oauth instance.
+	 * @param oauthToken
+	 * @param oauthVerifier
+	 */
 	public static void setInstance(String oauthToken, String oauthVerifier) {
 		try {
 			provider.retrieveAccessToken(consumer, oauthVerifier);

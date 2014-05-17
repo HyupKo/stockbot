@@ -24,6 +24,7 @@ public class IndexController {
 	 * index page.
 	 * @param request
 	 * @param response
+	 * @param session 
 	 * @return {@link String}
 	 */
 	@RequestMapping(value="/", method=RequestMethod.GET)
@@ -34,6 +35,12 @@ public class IndexController {
 		return "index";
 	}
 	
+	/**
+	 * Oauth.
+	 * @param request
+	 * @param response
+	 * @return {@link String}
+	 */
 	@RequestMapping(value="/oauth", method=RequestMethod.GET)
 	public String oauth(HttpServletRequest request, HttpServletResponse response) {
 		String oauthToken = request.getParameter("oauth_token").toString();
