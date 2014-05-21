@@ -2,6 +2,8 @@ package com.istock.bot.service;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * Index Service.
  * @author hyupko
@@ -22,10 +24,16 @@ public interface IndexService {
 
 	/**
 	 * Set oauth instance.
-	 * 
+	 * @param session 
 	 * @param oauthToken
 	 * @param oauthVerifier
 	 */
-	public void setInstance(String oauthToken, String oauthVerifier);
+	public void setInstance(HttpSession session, String oauthToken, String oauthVerifier);
+
+	/**
+	 * Send Msg.
+	 * @param msg
+	 */
+	public void sendMsg(String msg);
 
 }

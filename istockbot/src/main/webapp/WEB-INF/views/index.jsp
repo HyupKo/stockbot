@@ -9,7 +9,9 @@
 </head>
 <body>
 <h1>
+<c:if test="${oauthUrl ne null }">
 	<a href="${oauthUrl }">Go to OAuth URL.</a>
+</c:if>
 </h1>
 </body>
 </html>
