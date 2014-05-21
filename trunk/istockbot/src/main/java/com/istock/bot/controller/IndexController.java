@@ -1,5 +1,8 @@
 package com.istock.bot.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -53,6 +56,28 @@ public class IndexController {
 		indexService.setInstance(oauthToken, oauthVerifier);
 		
 		return "redirect:/";
+	}
+	
+	/**
+	 * Callback URL.
+	 * @param request
+	 * @param response
+	 * @return <code>null</code>
+	 */
+	@RequestMapping(value="/callback")
+	public String callback(HttpServletRequest request, HttpServletResponse response) {
+		String action = request.getParameter("action");
+		
+		if(action.equals("addBuddy")) {
+			System.out.println(request.getParameter("groupId"));
+		} else if(action.equals("sendFromMessage")) {
+			System.out.println(request.getParameter("groupId"));
+		} else if(action.equals("sendFromGroup")) {
+			System.out.println(request.getParameter("groupId"));
+		} else if(action.equals("createGroup")) {
+			System.out.println(request.getParameter("groupId"));
+		}
+		return "index";
 	}
 
 }
