@@ -30,10 +30,11 @@ public class OAuthBasic {
 	final static String ACCESS_TOKEN_URL = "https://apis.daum.net/oauth/accessToken";
 	final static String AUTHORIZE_URL = "https://apis.daum.net/oauth/authorize";
 
-	final static String CONSUMER_KEY = "3a7fb43d-67bf-414b-866b-af915eb4cc41";
-	final static String CONSUMER_SECRET = "i9hdtYG6zFQ-mk-fhn_qK2G4UBx25yY.9XglmbgJ-TGAkqff_pvJJw00";
+	final static String CONSUMER_KEY = "c8ff949a-8bb5-46b6-9cc2-72965975fc7c";
+	final static String CONSUMER_SECRET = "GcEd1e4GnsOWGTcvBZikcZdeqrA3I1Qas7E4xzxF_tOqQrQMS7P--g00";
 
 	final static String API_URL = "https://apis.daum.net";
+	final static String MYPEOPLE_URL = "https://apis.daum.net/mypeople/group/send.json";
 
 	// Service Provider 생성.
 	static OAuthProvider provider = new DefaultOAuthProvider(REQUEST_TOKEN_URL, ACCESS_TOKEN_URL, AUTHORIZE_URL);
@@ -97,6 +98,31 @@ public class OAuthBasic {
 			e.printStackTrace();
 		} catch (OAuthCommunicationException e) {
 			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Send msg.
+	 * @param msg
+	 */
+	public static void sendGroupMsg(String msg) {
+		URL url;
+		try {
+			url = new URL(MYPEOPLE_URL);
+			HttpURLConnection request = (HttpURLConnection) url.openConnection();
+			request.connect();
+			
+			BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+			String tmpStr = "";
+			
+			while ((tmpStr = br.readLine()) != null) {
+				System.out.println(tmpStr);
+				
+			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

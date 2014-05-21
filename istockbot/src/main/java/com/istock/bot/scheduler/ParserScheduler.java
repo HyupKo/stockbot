@@ -11,6 +11,8 @@ import org.jsoup.select.Elements;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.istock.bot.common.OAuthBasic;
+
 /**
  * Parser Scheduler for parsing HTML.
  * @author hyupko
@@ -24,7 +26,7 @@ public class ParserScheduler {
 	/**
 	 * parse page.
 	 */
-	@Scheduled(fixedRate=5000)
+	@Scheduled(fixedRate=500000)
 	private void parsePage() {
 		Connection.Response res;
 		Map<String, String> map = null;
@@ -36,11 +38,7 @@ public class ParserScheduler {
 			res.parse();
 			map = res.cookies();
 			System.out.println(map.toString());
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-
-		try {
+		
 			Document document = Jsoup.connect("http://cafe.daum.net/_c21_/shortcomment_read?grpid=17uHu&mgrpid=&fldid=GqjP&dataid=" + articleId + "&icontype=").cookies(map).get();
 			System.out.println(document.toString());
 			Elements elements = document.select("#commentDiv-" + articleId);
@@ -57,5 +55,12 @@ public class ParserScheduler {
 	public void setArticleId(String articleId) {
 		ParserScheduler.articleId = articleId;
 	}
-
+	
+	/**
+	 * Send Msg.
+	 */
+	// @Scheduled(fixedRate=10000)
+	public void sendMsg() {
+		OAuthBasic.sendGroupMsg("test");
+	}
 }
