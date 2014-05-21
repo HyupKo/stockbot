@@ -2,6 +2,8 @@ package com.istock.bot.serviceImpl;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Service;
 
 import com.istock.bot.common.OAuthBasic;
@@ -36,11 +38,20 @@ public class IndexServiceImpl implements IndexService {
 
 	/**
 	 * Set Instance.
-	 * @see com.istock.bot.service.IndexService#setInstance(String oauthToken, String oauthVerifier)
+	 * @see com.istock.bot.service.IndexService#setInstance(HttpSession session, String oauthToken, String oauthVerifier)
 	 */
 	@Override
-	public void setInstance(String oauthToken, String oauthVerifier) {
-		OAuthBasic.setInstance(oauthToken, oauthVerifier);
+	public void setInstance(HttpSession session, String oauthToken, String oauthVerifier) {
+		OAuthBasic.setInstance(session, oauthToken, oauthVerifier);
+	}
+
+	/**
+	 * Send Msg.
+	 * @param msg
+	 */
+	@Override
+	public void sendMsg(String msg) {
+		OAuthBasic.sendMsg(msg);
 	}
 
 }

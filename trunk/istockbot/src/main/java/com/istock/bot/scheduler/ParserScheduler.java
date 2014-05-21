@@ -26,7 +26,7 @@ public class ParserScheduler {
 	/**
 	 * parse page.
 	 */
-	@Scheduled(fixedRate=500000)
+	@Scheduled(fixedRate=60 * 1000)
 	private void parsePage() {
 		Connection.Response res;
 		Map<String, String> map = null;
@@ -49,18 +49,10 @@ public class ParserScheduler {
 	}
 	
 	/**
-	 * Set Article Id.
-	 * @param articleId
-	 */
-	public void setArticleId(String articleId) {
-		ParserScheduler.articleId = articleId;
-	}
-	
-	/**
 	 * Send Msg.
 	 */
 	// @Scheduled(fixedRate=10000)
 	public void sendMsg() {
-		OAuthBasic.sendGroupMsg("test");
+		OAuthBasic.sendMsg("test");
 	}
 }
