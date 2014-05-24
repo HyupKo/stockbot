@@ -74,9 +74,8 @@ public class IndexController {
 			if(content.contains("글번호:")) {
 				ParserScheduler ps = new ParserScheduler();
 				ps.setArticleId(content.split(":")[1]);
+				indexService.sendMsg(content + " 변경.");
 			}
-			
-			indexService.sendMsg(content + " 변경.");
 		} else if(action.equals("createGroup")) {
 			System.out.println(request.getParameter("groupId"));
 		}
