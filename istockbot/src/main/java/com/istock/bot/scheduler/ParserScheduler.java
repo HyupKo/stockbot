@@ -49,6 +49,14 @@ public class ParserScheduler {
 	}
 	
 	/**
+	 * Set Article Id.
+	 * @param id
+	 */
+	public void setArticleId(String id) {
+		articleId = id;
+	}
+	
+	/**
 	 * Send Msg.
 	 */
 	// @Scheduled(fixedRate=10000)

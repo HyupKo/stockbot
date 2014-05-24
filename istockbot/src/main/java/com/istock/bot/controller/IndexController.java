@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.istock.bot.scheduler.ParserScheduler;
 import com.istock.bot.service.IndexService;
 
 /**
@@ -69,7 +70,13 @@ public class IndexController {
 			System.out.println(request.getParameter("groupId"));
 		} else if(action.equals("sendFromGroup")) {
 			System.out.println(request.getParameter("groupId"));
-			indexService.sendMsg(request.getParameter("content"));
+			String content = request.getParameter("content");
+			if(content.contains("글번호:")) {
+				ParserScheduler ps = new ParserScheduler();
+				ps.setArticleId(content.split(":")[1]);
+			}
+			
+			indexService.sendMsg(content + " 변경.");
 		} else if(action.equals("createGroup")) {
 			System.out.println(request.getParameter("groupId"));
 		}
