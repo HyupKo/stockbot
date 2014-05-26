@@ -3,8 +3,8 @@ package com.istock.bot.scheduler;
 import java.io.IOException;
 import java.util.Map;
 
-import org.jsoup.Connection;
 import org.jsoup.Connection.Method;
+import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -29,17 +29,17 @@ public class ParserScheduler {
 	 */
 	@Scheduled(fixedRate=60 * 1000)
 	private void parsePage() {
-		Connection.Response res;
+		Response res;
 		Map<String, String> map = null;
 		
 		try {
 			res = Jsoup
 					.connect("https://logins.daum.net/accounts/login.do")
-					.data("id", "istockbot", "pw", "qlalfqjsgh1!")
+					.data("id", "istockbot.bot", "pw", "qlalfqjsgh1!")
 					.method(Method.POST).execute();
 			res.parse();
 			map = res.cookies();
-			System.out.println(map.toString());
+			System.out.println(res.statusCode() + "\n" + map.toString());
 		
 			Document document = Jsoup.connect("http://cafe.daum.net/_c21_/shortcomment_read?grpid=17uHu&mgrpid=&fldid=GqjP&dataid=" + articleId + "&icontype=").cookies(map).get();
 			System.out.println(document.toString());
