@@ -76,6 +76,10 @@ public class IndexController {
 				ps.setArticleId(content.split(":")[1]);
 				indexService.sendMsg(content + " 변경.");
 			}
+			if(content.contains("세팅")){
+				ParserScheduler ps = new ParserScheduler();
+				ps.printTodayEvent();
+			}
 		} else if(action.equals("createGroup")) {
 			System.out.println(request.getParameter("groupId"));
 		}
