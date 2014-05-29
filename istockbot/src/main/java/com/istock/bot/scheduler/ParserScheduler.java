@@ -28,7 +28,7 @@ public class ParserScheduler {
 	/**
 	 * parse page.
 	 */
-	@Scheduled(fixedRate=3 * 1000)
+	@Scheduled(cron="0/3 * * * * 2-6")
 	private void parsePage() {
 		Response res;
 		
