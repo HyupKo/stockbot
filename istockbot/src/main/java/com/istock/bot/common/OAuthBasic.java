@@ -55,7 +55,7 @@ public class OAuthBasic {
 		String authUrl = "";
 		
 		try {
-			authUrl = provider.retrieveRequestToken(consumer, "http://222.111.236.230:8080/oauth");
+			authUrl = provider.retrieveRequestToken(consumer, "http://istockbot.dnip.net:8080/oauth");
 			System.out.println(authUrl);
 		} catch (OAuthMessageSignerException e) {
 			e.printStackTrace();
