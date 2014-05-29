@@ -21,30 +21,33 @@ import com.istock.bot.common.OAuthBasic;
 public class ParserScheduler {
 	
 	// Set Article Id for daily setting.
-	private static String articleId = "2473";
+	private static String articleId = "2490";
 	private int comment_now = 0;
+	private Map <String, String> map = null;
 	
 	/**
 	 * parse page.
 	 */
-	@Scheduled(fixedRate=60 * 1000)
+	@Scheduled(fixedRate=3 * 1000)
 	private void parsePage() {
 		Response res;
-		Map<String, String> map = null;
 		
 		try {
-			res = Jsoup
+			if(map == null || map.isEmpty()) {
+				res = Jsoup
 					.connect("https://logins.daum.net/accounts/login.do")
 					.data("id", "istockbot.bot", "pw", "qlalfqjsgh1!")
 					.method(Method.POST).execute();
-			res.parse();
-			map = res.cookies();
-			System.out.println(res.statusCode() + "\n" + map.toString());
+				res.parse();
+				//System.out.println("============================\n" + res.body());
+				map = res.cookies();
+				// System.out.println(res.statusCode() + "\n" + map.toString());
+			}
 		
 			Document document = Jsoup.connect("http://cafe.daum.net/_c21_/shortcomment_read?grpid=17uHu&mgrpid=&fldid=GqjP&dataid=" + articleId + "&icontype=").cookies(map).get();
-			System.out.println(document.toString());
+			// System.out.println(document.toString());
 			Elements elements = document.select(".comment_contents");
-			
+		
 			if(comment_now != elements.size()) {
 				comment_now = elements.size();
 				
