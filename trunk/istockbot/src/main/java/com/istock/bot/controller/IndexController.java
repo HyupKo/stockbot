@@ -78,7 +78,7 @@ public class IndexController {
 			}
 			if(content.contains("세팅")){
 				ParserScheduler ps = new ParserScheduler();
-				ps.printTodayEvent();
+				ps.printForCallback();
 			}
 		} else if(action.equals("createGroup")) {
 			System.out.println(request.getParameter("groupId"));
