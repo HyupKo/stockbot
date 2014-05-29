@@ -56,6 +56,7 @@ public class OAuthBasic {
 		
 		try {
 			authUrl = provider.retrieveRequestToken(consumer, "http://222.111.236.230:8080/oauth");
+			System.out.println(authUrl);
 		} catch (OAuthMessageSignerException e) {
 			e.printStackTrace();
 		} catch (OAuthNotAuthorizedException e) {
