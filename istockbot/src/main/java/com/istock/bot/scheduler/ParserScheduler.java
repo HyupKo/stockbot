@@ -37,7 +37,7 @@ public class ParserScheduler {
 	/**
 	 * parse page.
 	 */
-	@Scheduled(cron="0/3 * * * * 2-6")
+	@Scheduled(cron="0/3 * 8-15 * * 2-6")
 	private void parsePage() {
 		
 		try {
