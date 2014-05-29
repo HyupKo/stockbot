@@ -39,17 +39,11 @@ public class ParserScheduler {
 	 */
 	@Scheduled(cron="0/3 * * * * 2-6")
 	private void parsePage() {
-		Response res;
 		
 		try {
 			if(map == null || map.isEmpty()) {
-				res = Jsoup
-					.connect("https://logins.daum.net/accounts/login.do")
-					.data("id", "istockbot.bot", "pw", "qlalfqjsgh1!")
-					.method(Method.POST).execute();
-				res.parse();
 				//System.out.println("============================\n" + res.body());
-				map = res.cookies();
+				map = loginForCookies();
 				printTodayEvent();
 				// System.out.println(res.statusCode() + "\n" + map.toString());
 			}
@@ -66,6 +60,26 @@ public class ParserScheduler {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * make Cookie
+	 * @return sendMap
+	 */
+	public Map <String, String> loginForCookies(){
+		Response loginRes;
+		Map <String, String> sendMap = null;
+		try {
+			loginRes = Jsoup
+				.connect("https://logins.daum.net/accounts/login.do")
+				.data("id", "istockbot.bot", "pw", "qlalfqjsgh1!")
+				.method(Method.POST).execute();
+			loginRes.parse();
+			sendMap = loginRes.cookies();
+		} catch (IOException e){
+			e.printStackTrace();
+		}
+		return sendMap;
 	}
 	
 	/**
@@ -89,15 +103,12 @@ public class ParserScheduler {
 				Elements freeBoardCont = freeRecCont.select("#template_xmp");
 				Document freeBodyTable = Jsoup.parse(freeBoardCont.text());
 				Elements freeBodyList = freeBodyTable.select("tbody");
-				Iterator<Element> bodyTableList = freeBodyList.iterator();
-				bodyTableList.next();
-				bodyTableList.next();
-				Element freeBody = bodyTableList.next();
+				Element freeBody = freeBodyList.get(2);
 				Iterator<Element> freeTable = freeBody.select("tr").iterator();
 				freeTable.next();
 				freeTable.next();
 				Element freeInfo = null;
-				
+				// make free event msg
 				freeContentsMsg.append(listTitle);
 				while(freeTable.hasNext()){
 					freeInfo = freeTable.next();
@@ -111,6 +122,14 @@ public class ParserScheduler {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * IndexController callback msg
+	 */
+	public void printForCallback(){
+		map = loginForCookies();
+		printTodayEvent();
 	}
 
 	
