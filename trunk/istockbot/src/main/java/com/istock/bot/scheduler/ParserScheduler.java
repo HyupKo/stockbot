@@ -246,7 +246,7 @@ public class ParserScheduler {
 		String stockPrice = stockInfo.select(".price").text();
 		String stockFluc = stockInfo.select(".price_fluc").text();
 		String stockRate = stockInfo.select(".rate_fluc").text();
-		stockRate.replaceAll("%", "％");
+		stockRate = stockRate.replaceAll("%", "％");
 		
 		Elements stockSummary = searchDoc.select(".summary .prices");
 		String stockCur = stockSummary.select("dd").get(0).text();
