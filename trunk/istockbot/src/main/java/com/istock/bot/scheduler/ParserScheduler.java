@@ -239,8 +239,7 @@ public class ParserScheduler {
 	 * @param searchDoc
 	 */
 	public void searchPrint(Document searchDoc){
-		System.out.println(searchDoc);
-		Elements stockInfo = searchDoc.select(".item_idx_info");
+		Elements stockInfo = searchDoc.select(".item_idx_info.stDn");
 		String stockType = stockInfo.select("h2 .txt_kospi").text();
 		String stockName = stockInfo.select("h2 .link_name").text();
 		String stockCode = stockInfo.select("h2 .stock_code").text();
@@ -253,6 +252,11 @@ public class ParserScheduler {
 		String stockMax = stockSummary.select(".max").text();
 		String stockMin = stockSummary.select(".min").text();
 		if(!stockCode.equals("") && stockCode!=null){
+			System.out.println("["+stockType+"]" + " " + stockName + " ("+stockCode+")"
+					+ "\n" + stockPrice+" " + stockFluc + " " + stockRate
+					+ "\n시가: " + stockCur
+					+ "\n고가: " + stockMax
+					+ "\n저가: " + stockMin);
 			OAuthBasic.sendMsg("["+stockType+"]" + " " + stockName + " ("+stockCode+")"
 					+ "\n" + stockPrice+" " + stockFluc + " " + stockRate
 					+ "\n시가: " + stockCur
