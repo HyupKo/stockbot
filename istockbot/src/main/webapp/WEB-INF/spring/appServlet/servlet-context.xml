@@ -28,4 +28,13 @@
 	<!-- Enables the Spring @Scheduled. -->
 	<task:annotation-driven/>
 	
+	<beans:bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<beans:property name="locations">
+			<beans:list>
+				<beans:value>/WEB-INF/config/serverInfo.properties</beans:value>
+				<beans:value>/WEB-INF/config/filterMsg.properties</beans:value>
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+
 </beans:beans>

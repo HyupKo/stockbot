@@ -21,44 +21,45 @@ import com.istock.bot.common.OAuthBasic;
  */
 @Component
 public class ParserScheduler {
+	private static boolean activeSchedule = true;
+	
+	private static String botId = "istockbot.bot";
+	private static String botPw = "qlalfqjsgh1!";
 	
 	// Set Article Id for daily setting.
 	private static String articleId = "";
-	
-	// daily list info
-	private static String listTitle = "";
-	private static String listUrl = "";
-	private static String listId = "";
-	// daily contents info
-	
+
 	private int comment_now = 0;
 	private Map <String, String> map = null;
 	
 	/**
 	 * parse page.
 	 */
-	@Scheduled(cron="0/3 * 8-15 * * 2-6")
+	//@Scheduled(cron="${bot.cron}")
+	@Scheduled(cron="0/3 * * * * *")
 	private void parsePage() {
-		
-		try {
-			if(map == null || map.isEmpty()) {
-				//System.out.println("============================\n" + res.body());
-				map = loginForCookies();
-				printTodayEvent();
-				// System.out.println(res.statusCode() + "\n" + map.toString());
+		if(activeSchedule){
+			try {
+				if(map == null || map.isEmpty()) {
+					map = loginForCookies();
+					printTodayEvent();
+				}
+				if(articleId.equals("")){
+					setActiveSchedule(false);
+				}
+				else {
+					System.out.println("동작중");
+					Document document = Jsoup.connect("http://cafe.daum.net/_c21_/shortcomment_read?grpid=17uHu&mgrpid=&fldid=GqjP&dataid=" + articleId + "&icontype=").cookies(map).get();
+					Elements elements = document.select(".comment_contents");
+					System.out.println(elements.last().text());
+					if(comment_now != elements.size()) {
+						comment_now = elements.size();
+						OAuthBasic.sendMsg("댓글 내용 : " + elements.last().text());
+					}
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		
-			Document document = Jsoup.connect("http://cafe.daum.net/_c21_/shortcomment_read?grpid=17uHu&mgrpid=&fldid=GqjP&dataid=" + articleId + "&icontype=").cookies(map).get();
-			// System.out.println(document.toString());
-			Elements elements = document.select(".comment_contents");
-		
-			if(comment_now != elements.size()) {
-				comment_now = elements.size();
-				
-				OAuthBasic.sendMsg("댓글 내용 : " + elements.last().text());
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 	
@@ -72,10 +73,13 @@ public class ParserScheduler {
 		try {
 			loginRes = Jsoup
 				.connect("https://logins.daum.net/accounts/login.do")
-				.data("id", "istockbot.bot", "pw", "qlalfqjsgh1!")
+				.data("id", botId, "pw", botPw)
 				.method(Method.POST).execute();
 			loginRes.parse();
 			sendMap = loginRes.cookies();
+			if(sendMap == null || sendMap.isEmpty()){
+				setActiveSchedule(false);
+			}
 		} catch (IOException e){
 			e.printStackTrace();
 		}
@@ -93,31 +97,41 @@ public class ParserScheduler {
 				Document freeRecBoard = Jsoup.connect("http://cafe.daum.net/_c21_/bbs_list?grpid=17uHu&fldid=GqjP").cookies(map).get();
 				// free today's list info
 				Elements freeBoardlist = freeRecBoard.select("font[color=#9934C4]");
-				listTitle = freeBoardlist.first().text();
-				listUrl = freeBoardlist.first().parent().parent().select("a[href]").attr("abs:href");
-				listId = freeBoardlist.first().parent().parent().parent().parent().select("td.num").text();
+				String listTitle = freeBoardlist.first().text();
+				String listUrl = freeBoardlist.first().parent().parent().select("a[href]").attr("abs:href");
+				String listId = freeBoardlist.first().parent().parent().parent().parent().select("td.num").text();
 				// set Article Id
 				setArticleId(listId);
+				//setArticleId("2483");
+				//listUrl = "http://cafe.daum.net/_c21_/bbs_read?grpid=17uHu&mgrpid=&fldid=GqjP&page=1&prev_page=0&firstbbsdepth=&lastbbsdepth=zzzzzzzzzzzzzzzzzzzzzzzzzzzzzz&contentval=000e3zzzzzzzzzzzzzzzzzzzzzzzzz&datanum=2483&listnum=20";
 				// free today's contents info
 				Document freeRecCont = Jsoup.connect(listUrl).cookies(map).get();
 				Elements freeBoardCont = freeRecCont.select("#template_xmp");
 				Document freeBodyTable = Jsoup.parse(freeBoardCont.text());
 				Elements freeBodyList = freeBodyTable.select("tbody");
-				Element freeBody = freeBodyList.get(2);
-				Iterator<Element> freeTable = freeBody.select("tr").iterator();
-				freeTable.next();
-				freeTable.next();
-				Element freeInfo = null;
-				// make free event msg
-				freeContentsMsg.append(listTitle);
-				while(freeTable.hasNext()){
-					freeInfo = freeTable.next();
-					freeContentsMsg.append("\n");
-					freeContentsMsg.append(freeInfo.select("td").get(0).text().replaceAll("&nbsp;", "").trim());
-					freeContentsMsg.append(" / ");
-					freeContentsMsg.append(freeInfo.select("td").get(1).text().replaceAll("&nbsp;", "").split("-")[0].trim());
+				if(freeBodyList.size()>1){
+					Element freeBody = freeBodyList.get(2);
+					Iterator<Element> freeTable = freeBody.select("tr").iterator();
+					freeTable.next();
+					freeTable.next();
+					Element freeInfo = null;
+					// make free event msg
+					freeContentsMsg.append(listTitle);
+					while(freeTable.hasNext()){
+						freeInfo = freeTable.next();
+						freeContentsMsg.append("\n");
+						freeContentsMsg.append(freeInfo.select("td").get(0).text().replaceAll("&nbsp;", "").trim());
+						freeContentsMsg.append(" / ");
+						freeContentsMsg.append(freeInfo.select("td").get(1).text().replaceAll("&nbsp;", "").split("-")[0].trim());
+					}
+					OAuthBasic.sendMsg(freeContentsMsg.toString());
 				}
-				OAuthBasic.sendMsg(freeContentsMsg.toString());
+				else {
+					OAuthBasic.sendMsg("금일 추천종목이 없습니다.\n봇 중지합니다.");
+					System.out.println("추천종목없음");
+					setArticleId("");
+					setActiveSchedule(false);
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -128,17 +142,28 @@ public class ParserScheduler {
 	 * IndexController callback msg
 	 */
 	public void printForCallback(){
-		map = loginForCookies();
-		printTodayEvent();
+		if(activeSchedule){
+			if(map == null || map.isEmpty()) {
+				map = loginForCookies();
+			}
+			printTodayEvent();
+		}
 	}
 
-	
 	/**
 	 * Set Article Id.
 	 * @param id
 	 */
 	public void setArticleId(String id) {
 		articleId = id;
+	}
+	
+	/**
+	 * Set ActiveSchedule
+	 * @param act
+	 */
+	public void setActiveSchedule(boolean act) {
+		activeSchedule = act;
 	}
 	
 	/**
