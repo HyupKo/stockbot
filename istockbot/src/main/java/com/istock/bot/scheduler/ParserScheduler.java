@@ -35,6 +35,21 @@ public class ParserScheduler {
 
 	private int comment_now = 0;
 	private Map <String, String> map = null;
+	
+	/**
+	 * daily morning init function
+	 */
+	@Scheduled(cron="${bot.initCron}")
+	public void init(){
+		OAuthBasic.sendMsg("- 봇 초기화 "
+				+ "\n- 07:30~08:30 장전거래"
+				+ "\n- 09:00~15:00 보통거래"
+				+ "\n- 15:10~15:30 장후거래"
+				+ "\n- 성투합시다 (도움말 : /?)");
+		resetCommentNum();
+		setActiveSchedule(true);
+		printForCallback();
+	}
 
 	/**
 	 * parse page.
@@ -42,7 +57,6 @@ public class ParserScheduler {
 	@Scheduled(cron="${bot.cron}")
 	private void parsePage() {
 		if(activeSchedule){
-			
 			try {
 				if(map == null || map.isEmpty()) {
 					map = loginForCookies();
@@ -162,6 +176,90 @@ public class ParserScheduler {
 				map = loginForCookies();
 			}
 			printTodayEvent();
+		}
+	}
+	
+	/**
+	 * stock code info search
+	 * @param codeNo
+	 */
+	public void searchCode(String codeNo){
+		try {
+			Document stockConn = Jsoup
+					.connect("http://m.stock.daum.net/item/main.daum?code="+codeNo)
+					.ignoreHttpErrors(true)
+					.get();
+			searchPrint(stockConn);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * stock name list search
+	 * @param searchWord
+	 */
+	public void searchName(String searchWord){
+		try {
+			Response searchBody = Jsoup
+				.connect("http://m.stock.daum.net/m/search/search.daum")
+				.data("name", searchWord)
+				.ignoreHttpErrors(true)
+				.method(Method.POST).execute();
+			Document searchResult = searchBody.parse();
+			if(searchResult.select(".item_idx_info").size()>0){
+				searchPrint(searchResult);
+			}
+			else {
+				Elements searchTable = searchResult.select("#resultTable tbody tr");
+				if(searchTable.size()>0){
+					Iterator<Element> searchTr = searchTable.iterator();
+					Element resultTr = null;
+					StringBuffer searchResultMsg = new StringBuffer();
+					searchResultMsg.append("- 종목명 검색결과 ("+searchTable.size()+") -");
+					while(searchTr.hasNext()){
+						resultTr = searchTr.next();
+						searchResultMsg.append("\n" + resultTr.select("th abbr").attr("title")
+								+ " (" + resultTr.select(".inp_check").attr("value") + ")");
+					}
+					OAuthBasic.sendMsg(searchResultMsg.toString());
+				}
+				else {
+					OAuthBasic.sendMsg("- 검색결과가 없습니다.");
+				}
+			}
+		} catch (IOException e){
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * stock search common logic
+	 * @param searchDoc
+	 */
+	public void searchPrint(Document searchDoc){
+		Elements stockInfo = searchDoc.select(".item_idx_info");
+		String stockType = stockInfo.select("h2 .txt_kospi").text();
+		String stockName = stockInfo.select("h2 .link_name").text();
+		String stockCode = stockInfo.select("h2 .stock_code").text();
+		String stockPrice = stockInfo.select(".price").text();
+		String stockFluc = stockInfo.select(".price_fluc").text();
+		String stockRate = stockInfo.select(".rate_fluc").text();
+		
+		Elements stockSummary = searchDoc.select(".summary .prices");
+		String stockCur = stockSummary.select(".cur").text();
+		String stockMax = stockSummary.select(".max").text();
+		String stockMin = stockSummary.select(".min").text();
+		if(!stockCode.equals("") && stockCode!=null){
+			OAuthBasic.sendMsg("["+stockType+"]" + " " + stockName + " ("+stockCode+")"
+					+ "\n" + stockPrice+" " + stockFluc + " " + stockRate
+					+ "\n시가: " + stockCur
+					+ "\n고가: " + stockMax
+					+ "\n저가: " + stockMin);
+		}
+		else {
+			OAuthBasic.sendMsg("- 검색결과가 없습니다.");
 		}
 	}
 

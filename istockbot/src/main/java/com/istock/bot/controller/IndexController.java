@@ -76,7 +76,16 @@ public class IndexController {
 				indexService.sendMsg("- 글번호 " + content.split(":")[1] + " 파싱시작 -");
 				ps.resetCommentNum();
 				ps.setActiveSchedule(true);
-				ps.setArticleId(content.split(":")[1]);
+				ps.setArticleId(content.split(":")[1].trim());
+			}
+			if(content.contains("/c:")) {
+				ParserScheduler ps = new ParserScheduler();
+				//indexService.sendMsg("- 종목코드 " + content.split(":")[1] + " 파싱시작 -");
+				ps.searchCode(content.split(":")[1].trim());
+			}
+			if(content.contains("/n:")) {
+				ParserScheduler ps = new ParserScheduler();
+				ps.searchName(content.split(":")[1].trim());
 			}
 			if(content.equals("/s")){
 				ParserScheduler ps = new ParserScheduler();
@@ -100,6 +109,8 @@ public class IndexController {
 				indexService.sendMsg("/? - 도움말"
 						+ "\n/s - 최근글로 파싱시작"
 						+ "\n/r:글번호 - 글번호 파싱시작"
+						+ "\n/c:종목코드 - 종목코드로 조회"
+						+ "\n/n:종목단어 - 종목명으로 조회"
 						+ "\n/a - 동작실행"
 						+ "\n/q - 동작중지");
 			}
