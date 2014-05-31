@@ -3,6 +3,8 @@ package com.istock.bot.scheduler;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.jsoup.Connection.Method;
 import org.jsoup.Connection.Response;
@@ -10,6 +12,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -21,8 +24,9 @@ import com.istock.bot.common.OAuthBasic;
  */
 @Component
 public class ParserScheduler {
-	private static boolean activeSchedule = true;
+	@Value("${filter.text}") String rexTxt;
 	
+	private static boolean activeSchedule = true;
 	private static String botId = "istockbot.bot";
 	private static String botPw = "qlalfqjsgh1!";
 	
@@ -31,13 +35,14 @@ public class ParserScheduler {
 
 	private int comment_now = 0;
 	private Map <String, String> map = null;
-	
+
 	/**
 	 * parse page.
 	 */
 	@Scheduled(cron="${bot.cron}")
 	private void parsePage() {
 		if(activeSchedule){
+			
 			try {
 				if(map == null || map.isEmpty()) {
 					map = loginForCookies();
@@ -47,12 +52,21 @@ public class ParserScheduler {
 					setActiveSchedule(false);
 				}
 				else {
-					Document document = Jsoup.connect("http://cafe.daum.net/_c21_/shortcomment_read?grpid=17uHu&mgrpid=&fldid=GqjP&dataid=" + articleId + "&icontype=").cookies(map).get();
+					Document document = Jsoup.connect("http://cafe.daum.net/_c21_/shortcomment_read?grpid=17uHu&mgrpid=&fldid=GqjP&dataid=" + articleId + "&icontype=")
+											.ignoreHttpErrors(true)
+											.cookies(map).get();
 					Elements elements = document.select(".comment_contents");
 					if(elements.size()>0){
 						if(comment_now != elements.size()) {
 							comment_now = elements.size();
-							OAuthBasic.sendMsg("> " + elements.last().text());
+							Pattern rexPattern = Pattern.compile(rexTxt);
+							Matcher matTxt = rexPattern.matcher(elements.last().text());
+							if(matTxt.find()){
+								OAuthBasic.sendMsg("> " + elements.last().text());
+							}
+							else {
+								OAuthBasic.sendMsg("[임시필터링] " + elements.last().text());
+							}
 						}
 					}
 					else {
@@ -61,6 +75,7 @@ public class ParserScheduler {
 					}
 				}
 			} catch (IOException e) {
+				setActiveSchedule(false);
 				e.printStackTrace();
 			}
 		}
