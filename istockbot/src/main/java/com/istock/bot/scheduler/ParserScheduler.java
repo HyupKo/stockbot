@@ -246,6 +246,7 @@ public class ParserScheduler {
 		String stockPrice = stockInfo.select(".price").text();
 		String stockFluc = stockInfo.select(".price_fluc").text();
 		String stockRate = stockInfo.select(".rate_fluc").text();
+		stockRate.replaceAll("%", "％");
 		
 		Elements stockSummary = searchDoc.select(".summary .prices");
 		String stockCur = stockSummary.select("dd").get(0).text();
@@ -253,11 +254,11 @@ public class ParserScheduler {
 		String stockMin = stockSummary.select("dd").get(2).text();
 		if(!stockCode.equals("") && stockCode!=null){
 			StringBuffer searchResultMsg = new StringBuffer();
-			searchResultMsg.append("["+stockType+"]" + " " + stockName + " ("+stockCode+")"
-					+ "\n" + stockPrice + " " + stockFluc
-					+ "\n시가: " + stockCur
-					+ "\n고가: " + stockMax
-					+ "\n저가: " + stockMin);
+			searchResultMsg.append("["+stockType+"]" + " " + stockName + " ("+stockCode+")");
+			searchResultMsg.append("\n" + stockPrice + " " + stockFluc + " " + stockRate);
+			searchResultMsg.append("\n시가: " + stockCur);
+			searchResultMsg.append("\n고가: " + stockMax);
+			searchResultMsg.append("\n저가: " + stockMin);
 			OAuthBasic.sendMsg(searchResultMsg.toString());
 		}
 		else {
