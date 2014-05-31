@@ -71,14 +71,32 @@ public class IndexController {
 		} else if(action.equals("sendFromGroup")) {
 			System.out.println(request.getParameter("groupId"));
 			String content = request.getParameter("content");
-			if(content.contains("글번호:")) {
+			if(content.contains("/r:")) {
 				ParserScheduler ps = new ParserScheduler();
 				ps.setArticleId(content.split(":")[1]);
-				indexService.sendMsg(content + " 변경.");
+				indexService.sendMsg(content + " 글번호의 댓글로 파싱시작");
 			}
-			if(content.contains("세팅")){
+			if(content.equals("/s")){
 				ParserScheduler ps = new ParserScheduler();
 				ps.printForCallback();
+				indexService.sendMsg("최근글로 파싱시작");
+			}
+			if(content.equals("/a")){
+				ParserScheduler ps = new ParserScheduler();
+				ps.setActiveSchedule(true);
+				indexService.sendMsg("동작실행");
+			}
+			if(content.equals("/q")){
+				ParserScheduler ps = new ParserScheduler();
+				ps.setActiveSchedule(false);
+				indexService.sendMsg("동작중지");
+			}
+			if(content.equals("/?")){
+				indexService.sendMsg("/? - 도움말"
+						+ "\n/s - 최근글로 파싱시작"
+						+ "\n/r:글번호 - 글번호의 댓글로 파싱시작"
+						+ "\n/a - 동작실행"
+						+ "\n/q - 동작중지");
 			}
 		} else if(action.equals("createGroup")) {
 			System.out.println(request.getParameter("groupId"));
