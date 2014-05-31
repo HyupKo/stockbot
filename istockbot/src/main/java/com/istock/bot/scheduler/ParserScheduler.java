@@ -121,9 +121,9 @@ public class ParserScheduler {
 					while(freeTable.hasNext()){
 						freeInfo = freeTable.next();
 						freeContentsMsg.append("\n");
-						freeContentsMsg.append(freeInfo.select("td").get(0).text().replaceAll("&nbsp;", "").trim());
+						freeContentsMsg.append(freeInfo.select("td").get(0).text().replaceAll("\u00a0", "").trim());
 						freeContentsMsg.append(" / ");
-						freeContentsMsg.append(freeInfo.select("td").get(1).text().replaceAll("&nbsp;", "").split("-")[0].trim());
+						freeContentsMsg.append(freeInfo.select("td").get(1).text().replaceAll("\u00a0", "").split("-")[0].trim());
 					}
 					OAuthBasic.sendMsg(freeContentsMsg.toString());
 				}
