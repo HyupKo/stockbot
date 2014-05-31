@@ -47,15 +47,17 @@ public class ParserScheduler {
 					setActiveSchedule(false);
 				}
 				else {
-					System.out.println("동작중");
 					Document document = Jsoup.connect("http://cafe.daum.net/_c21_/shortcomment_read?grpid=17uHu&mgrpid=&fldid=GqjP&dataid=" + articleId + "&icontype=").cookies(map).get();
 					Elements elements = document.select(".comment_contents");
 					if(elements.size()>0){
-						System.out.println(elements.last().text());
 						if(comment_now != elements.size()) {
 							comment_now = elements.size();
-							OAuthBasic.sendMsg("댓글 내용 : " + elements.last().text());
+							OAuthBasic.sendMsg(">> " + elements.last().text());
 						}
+					}
+					else {
+						OAuthBasic.sendMsg("댓글이 존재하지 않습니다.\n동작을 중지합니다.");
+						setActiveSchedule(false);
 					}
 				}
 			} catch (IOException e) {
@@ -103,8 +105,6 @@ public class ParserScheduler {
 				String listId = freeBoardlist.first().parent().parent().parent().parent().select("td.num").text();
 				// set Article Id
 				setArticleId(listId);
-				//setArticleId("2483");
-				//listUrl = "http://cafe.daum.net/_c21_/bbs_read?grpid=17uHu&mgrpid=&fldid=GqjP&page=1&prev_page=0&firstbbsdepth=&lastbbsdepth=zzzzzzzzzzzzzzzzzzzzzzzzzzzzzz&contentval=000e3zzzzzzzzzzzzzzzzzzzzzzzzz&datanum=2483&listnum=20";
 				// free today's contents info
 				Document freeRecCont = Jsoup.connect(listUrl).cookies(map).get();
 				Elements freeBoardCont = freeRecCont.select("#template_xmp");
@@ -128,8 +128,7 @@ public class ParserScheduler {
 					OAuthBasic.sendMsg(freeContentsMsg.toString());
 				}
 				else {
-					OAuthBasic.sendMsg("금일 추천종목이 없습니다.\n봇 중지합니다.");
-					System.out.println("추천종목없음");
+					OAuthBasic.sendMsg("금일 추천종목이 없습니다.\n동작을 중지합니다.");
 					setArticleId("");
 					setActiveSchedule(false);
 				}
@@ -170,7 +169,6 @@ public class ParserScheduler {
 	/**
 	 * Send Msg.
 	 */
-	@Scheduled(cron="0 0 1 * * 2-6")
 	public void resetCommentNum() {
 		comment_now = 0;
 	}
