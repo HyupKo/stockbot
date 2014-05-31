@@ -239,7 +239,7 @@ public class ParserScheduler {
 	 * @param searchDoc
 	 */
 	public void searchPrint(Document searchDoc){
-		Elements stockInfo = searchDoc.select(".item_idx_info.stDn");
+		Elements stockInfo = searchDoc.select(".item_idx_info");
 		String stockType = stockInfo.select("h2 .txt_kospi").text();
 		String stockName = stockInfo.select("h2 .link_name").text();
 		String stockCode = stockInfo.select("h2 .stock_code").text();
