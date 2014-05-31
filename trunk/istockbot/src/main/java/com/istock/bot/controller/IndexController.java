@@ -76,16 +76,16 @@ public class IndexController {
 				indexService.sendMsg("- 글번호 " + content.split(":")[1] + " 파싱시작 -");
 				ps.resetCommentNum();
 				ps.setActiveSchedule(true);
-				ps.setArticleId(content.split(":")[1].trim());
+				ps.setArticleId(content.split(":")[1]);
 			}
 			if(content.contains("/c:")) {
 				ParserScheduler ps = new ParserScheduler();
 				//indexService.sendMsg("- 종목코드 " + content.split(":")[1] + " 파싱시작 -");
-				ps.searchCode(content.split(":")[1].trim());
+				ps.searchCode(content.split(":")[1]);
 			}
 			if(content.contains("/n:")) {
 				ParserScheduler ps = new ParserScheduler();
-				ps.searchName(content.split(":")[1].trim());
+				ps.searchName(content.split(":")[1]);
 			}
 			if(content.equals("/s")){
 				ParserScheduler ps = new ParserScheduler();
