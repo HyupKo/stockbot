@@ -52,11 +52,11 @@ public class ParserScheduler {
 					if(elements.size()>0){
 						if(comment_now != elements.size()) {
 							comment_now = elements.size();
-							OAuthBasic.sendMsg(">> " + elements.last().text());
+							OAuthBasic.sendMsg("> " + elements.last().text());
 						}
 					}
 					else {
-						OAuthBasic.sendMsg("댓글이 존재하지 않습니다.\n동작을 중지합니다.");
+						OAuthBasic.sendMsg("- 댓글이 존재하지 않습니다.\n- 동작을 중지합니다.");
 						setActiveSchedule(false);
 					}
 				}
@@ -128,7 +128,7 @@ public class ParserScheduler {
 					OAuthBasic.sendMsg(freeContentsMsg.toString());
 				}
 				else {
-					OAuthBasic.sendMsg("금일 추천종목이 없습니다.\n동작을 중지합니다.");
+					OAuthBasic.sendMsg("- 금일 추천종목이 없습니다.\n- 동작을 중지합니다.");
 					setArticleId("");
 					setActiveSchedule(false);
 				}

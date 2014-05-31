@@ -73,28 +73,28 @@ public class IndexController {
 			String content = request.getParameter("content");
 			if(content.contains("/r:")) {
 				ParserScheduler ps = new ParserScheduler();
+				indexService.sendMsg("- 글번호 " + content.split(":")[1] + " 파싱시작 -");
 				ps.resetCommentNum();
 				ps.setActiveSchedule(true);
-				indexService.sendMsg(content + " 글번호 파싱시작");
 				ps.setArticleId(content.split(":")[1]);
 			}
 			if(content.equals("/s")){
 				ParserScheduler ps = new ParserScheduler();
+				indexService.sendMsg("- 최근글로 파싱시작 -");
 				ps.resetCommentNum();
 				ps.setActiveSchedule(true);
 				ps.printForCallback();
-				indexService.sendMsg("최근글로 파싱시작");
 			}
 			if(content.equals("/a")){
 				ParserScheduler ps = new ParserScheduler();
+				indexService.sendMsg("- 동작실행 -");
 				ps.resetCommentNum();
 				ps.setActiveSchedule(true);
-				indexService.sendMsg("동작실행");
 			}
 			if(content.equals("/q")){
 				ParserScheduler ps = new ParserScheduler();
+				indexService.sendMsg("- 동작중지 -");
 				ps.setActiveSchedule(false);
-				indexService.sendMsg("동작중지");
 			}
 			if(content.equals("/?")){
 				indexService.sendMsg("/? - 도움말"
