@@ -35,8 +35,7 @@ public class ParserScheduler {
 	/**
 	 * parse page.
 	 */
-	//@Scheduled(cron="${bot.cron}")
-	@Scheduled(cron="0/3 * * * * *")
+	@Scheduled(cron="${bot.cron}")
 	private void parsePage() {
 		if(activeSchedule){
 			try {
@@ -51,10 +50,12 @@ public class ParserScheduler {
 					System.out.println("동작중");
 					Document document = Jsoup.connect("http://cafe.daum.net/_c21_/shortcomment_read?grpid=17uHu&mgrpid=&fldid=GqjP&dataid=" + articleId + "&icontype=").cookies(map).get();
 					Elements elements = document.select(".comment_contents");
-					System.out.println(elements.last().text());
-					if(comment_now != elements.size()) {
-						comment_now = elements.size();
-						OAuthBasic.sendMsg("댓글 내용 : " + elements.last().text());
+					if(elements.size()>0){
+						System.out.println(elements.last().text());
+						if(comment_now != elements.size()) {
+							comment_now = elements.size();
+							OAuthBasic.sendMsg("댓글 내용 : " + elements.last().text());
+						}
 					}
 				}
 			} catch (IOException e) {

@@ -73,11 +73,13 @@ public class IndexController {
 			String content = request.getParameter("content");
 			if(content.contains("/r:")) {
 				ParserScheduler ps = new ParserScheduler();
+				ps.setActiveSchedule(true);
 				ps.setArticleId(content.split(":")[1]);
-				indexService.sendMsg(content + " 글번호의 댓글로 파싱시작");
+				indexService.sendMsg(content + " 글번호 파싱시작");
 			}
 			if(content.equals("/s")){
 				ParserScheduler ps = new ParserScheduler();
+				ps.setActiveSchedule(true);
 				ps.printForCallback();
 				indexService.sendMsg("최근글로 파싱시작");
 			}
