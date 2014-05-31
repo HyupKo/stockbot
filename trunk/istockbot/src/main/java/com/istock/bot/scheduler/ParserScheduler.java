@@ -248,20 +248,17 @@ public class ParserScheduler {
 		String stockRate = stockInfo.select(".rate_fluc").text();
 		
 		Elements stockSummary = searchDoc.select(".summary .prices");
-		String stockCur = stockSummary.select(".cur").text();
-		String stockMax = stockSummary.select(".max").text();
-		String stockMin = stockSummary.select(".min").text();
+		String stockCur = stockSummary.select("dd").get(0).text();
+		String stockMax = stockSummary.select("dd").get(1).text();
+		String stockMin = stockSummary.select("dd").get(2).text();
 		if(!stockCode.equals("") && stockCode!=null){
-			System.out.println("["+stockType+"]" + " " + stockName + " ("+stockCode+")"
+			StringBuffer searchResultMsg = new StringBuffer();
+			searchResultMsg.append("["+stockType+"]" + " " + stockName + " ("+stockCode+")"
 					+ "\n" + stockPrice+" " + stockFluc + " " + stockRate
 					+ "\n시가: " + stockCur
 					+ "\n고가: " + stockMax
 					+ "\n저가: " + stockMin);
-			OAuthBasic.sendMsg("["+stockType+"]" + " " + stockName + " ("+stockCode+")"
-					+ "\n" + stockPrice+" " + stockFluc + " " + stockRate
-					+ "\n시가: " + stockCur
-					+ "\n고가: " + stockMax
-					+ "\n저가: " + stockMin);
+			OAuthBasic.sendMsg(searchResultMsg.toString());
 		}
 		else {
 			OAuthBasic.sendMsg("- 검색결과가 없습니다.");
