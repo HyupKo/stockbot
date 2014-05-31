@@ -254,7 +254,7 @@ public class ParserScheduler {
 		if(!stockCode.equals("") && stockCode!=null){
 			StringBuffer searchResultMsg = new StringBuffer();
 			searchResultMsg.append("["+stockType+"]" + " " + stockName + " ("+stockCode+")"
-					+ "\n" + stockPrice + "  " + stockRate
+					+ "\n" + stockPrice + " " + stockFluc
 					+ "\n시가: " + stockCur
 					+ "\n고가: " + stockMax
 					+ "\n저가: " + stockMin);
