@@ -12,6 +12,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -25,6 +27,8 @@ import com.istock.bot.common.OAuthBasic;
 @Component
 public class ParserScheduler {
 	@Value("${filter.text}") String rexTxt;
+	
+	private static final Logger logger = LoggerFactory.getLogger(ParserScheduler.class);
 	
 	private static boolean activeSchedule = true;
 	private static String botId = "istockbot.bot";
@@ -111,6 +115,7 @@ public class ParserScheduler {
 			sendMap = loginRes.cookies();
 			if(sendMap == null || sendMap.isEmpty()){
 				setActiveSchedule(false);
+				logger.error("[ParserScheduler] - loginForCookies : Login Cookies are not in Map.");
 			}
 		} catch (IOException e){
 			e.printStackTrace();
@@ -127,19 +132,23 @@ public class ParserScheduler {
 			if(map != null && !map.isEmpty()) {
 				// free list main page
 				Document freeRecBoard = Jsoup.connect("http://cafe.daum.net/_c21_/bbs_list?grpid=17uHu&fldid=GqjP").cookies(map).get();
+				
 				// free today's list info
 				Elements freeBoardlist = freeRecBoard.select("font[color=#9934C4]");
 				String listTitle = freeBoardlist.first().text();
 				String listUrl = freeBoardlist.first().parent().parent().select("a[href]").attr("abs:href");
 				String listId = freeBoardlist.first().parent().parent().parent().parent().select("td.num").text();
+				
 				// set Article Id
 				setArticleId(listId);
+				
 				// free today's contents info
 				Document freeRecCont = Jsoup.connect(listUrl).cookies(map).get();
 				Elements freeBoardCont = freeRecCont.select("#template_xmp");
 				Document freeBodyTable = Jsoup.parse(freeBoardCont.text());
 				Elements freeBodyList = freeBodyTable.select("tbody");
-				if(freeBodyList.size()>1){
+				
+				if(freeBodyList.size()>1) {
 					Element freeBody = freeBodyList.get(2);
 					Iterator<Element> freeTable = freeBody.select("tr").iterator();
 					freeTable.next();
@@ -155,14 +164,14 @@ public class ParserScheduler {
 						freeContentsMsg.append(freeInfo.select("td").get(1).text().replaceAll("\u00a0", "").split("-")[0].trim());
 					}
 					OAuthBasic.sendMsg(freeContentsMsg.toString());
-				}
-				else {
+				} else {
 					OAuthBasic.sendMsg("- 금일 추천종목이 없습니다.\n- 동작을 중지합니다.");
 					setArticleId("");
 					setActiveSchedule(false);
 				}
 			}
 		} catch (IOException e) {
+			logger.error("[printTodayEvent] : error when parsing today list.");
 			e.printStackTrace();
 		}
 	}
@@ -191,7 +200,7 @@ public class ParserScheduler {
 					.get();
 			searchPrint(stockConn);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			logger.error("[searchCode] : Can't find search Code.");
 			e.printStackTrace();
 		}
 	}
@@ -207,29 +216,33 @@ public class ParserScheduler {
 				.data("name", searchWord)
 				.ignoreHttpErrors(true)
 				.method(Method.POST).execute();
+			
 			Document searchResult = searchBody.parse();
+			
 			if(searchResult.select(".item_idx_info").size()>0){
 				searchPrint(searchResult);
-			}
-			else {
+			} else {
 				Elements searchTable = searchResult.select("#resultTable tbody tr");
+				
 				if(searchTable.size()>0){
 					Iterator<Element> searchTr = searchTable.iterator();
 					Element resultTr = null;
 					StringBuffer searchResultMsg = new StringBuffer();
 					searchResultMsg.append("- 종목명 검색결과 ("+searchTable.size()+") -");
+					
 					while(searchTr.hasNext()){
 						resultTr = searchTr.next();
 						searchResultMsg.append("\n" + resultTr.select("th abbr").attr("title")
 								+ " (" + resultTr.select(".inp_check").attr("value") + ")");
 					}
+					
 					OAuthBasic.sendMsg(searchResultMsg.toString());
-				}
-				else {
+				} else {
 					OAuthBasic.sendMsg("- 검색결과가 없습니다.");
 				}
 			}
 		} catch (IOException e){
+			logger.error("[searchName] : Can't find search name.");
 			e.printStackTrace();
 		}
 	}
@@ -252,16 +265,18 @@ public class ParserScheduler {
 		String stockCur = stockSummary.select("dd").get(0).text();
 		String stockMax = stockSummary.select("dd").get(1).text();
 		String stockMin = stockSummary.select("dd").get(2).text();
-		if(!stockCode.equals("") && stockCode!=null){
+		
+		if(!stockCode.equals("") && stockCode!=null) {
 			StringBuffer searchResultMsg = new StringBuffer();
+			
 			searchResultMsg.append("["+stockType+"]" + " " + stockName + " ("+stockCode+")");
 			searchResultMsg.append("\n" + stockPrice + " " + stockFluc + " " + stockRate);
 			searchResultMsg.append("\n시가: " + stockCur);
 			searchResultMsg.append("\n고가: " + stockMax);
 			searchResultMsg.append("\n저가: " + stockMin);
+			
 			OAuthBasic.sendMsg(searchResultMsg.toString());
-		}
-		else {
+		} else {
 			OAuthBasic.sendMsg("- 검색결과가 없습니다.");
 		}
 	}
