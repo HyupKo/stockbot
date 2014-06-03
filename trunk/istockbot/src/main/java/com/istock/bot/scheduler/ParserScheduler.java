@@ -139,6 +139,18 @@ public class ParserScheduler {
 				String listUrl = freeBoardlist.first().parent().parent().select("a[href]").attr("abs:href");
 				String listId = freeBoardlist.first().parent().parent().parent().parent().select("td.num").text();
 				
+				if(listTitle == null || listTitle.equals("")) {
+					logger.warn("[printTodayEvent]  :  Has no listTitle.");
+				}
+				
+				if(listUrl == null || listUrl.equals("")) {
+					logger.warn("[printTodayEvent]  :  Has no listUrl.");
+				}
+				
+				if(listId == null || listId.equals("")) {
+					logger.warn("[printTodayEvent]  :  Has no listId.");
+				}
+				
 				// set Article Id
 				setArticleId(listId);
 				
