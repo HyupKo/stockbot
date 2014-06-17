@@ -109,6 +109,16 @@ public class IndexController {
 						+ "\n/a - 동작실행"
 						+ "\n/q - 동작중지");
 			}
+			if(content.equals("/reboot")){
+				indexService.sendMsg("- service restart -");
+				try{	
+					String commandLine = "sudo service tomcat7 restart";
+					Runtime.getRuntime().exec(commandLine);
+				}
+				catch(Exception ee){
+					System.out.println(ee.getMessage());
+				}	
+			}
 		} else if(action.equals("createGroup")) {
 			System.out.println(request.getParameter("groupId"));
 		}
