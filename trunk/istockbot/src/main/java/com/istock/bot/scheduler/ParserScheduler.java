@@ -71,7 +71,7 @@ public class ParserScheduler {
 				}
 				else {
 					Document document = Jsoup.connect("http://cafe.daum.net/_c21_/shortcomment_read?grpid=17uHu&mgrpid=&fldid=GqjP&dataid=" + articleId + "&icontype=")
-											.ignoreHttpErrors(true)
+											//.ignoreHttpErrors(true)
 											.cookies(map).get();
 					Elements elements = document.select(".comment_contents");
 					if(elements.size()>0){
