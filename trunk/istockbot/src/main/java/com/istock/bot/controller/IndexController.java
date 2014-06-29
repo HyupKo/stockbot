@@ -112,7 +112,7 @@ public class IndexController {
 			if(content.equals("/reboot")){
 				indexService.sendMsg("- service restart -");
 				try{	
-					String commandLine = "sudo service tomcat7 restart";
+					String commandLine = "/home/pi/trestart.sh";
 					Runtime.getRuntime().exec(commandLine);
 				}
 				catch(Exception ee){
