@@ -78,12 +78,12 @@ public class ParserScheduler {
 						if(comment_now != elements.size()) {
 							comment_now = elements.size();
 							Pattern rexPattern = Pattern.compile(rexTxt);
-							Matcher matTxt = rexPattern.matcher(elements.last().text());
+							Matcher matTxt = rexPattern.matcher(elements.last().text().replaceAll("&", "8"));
 							if(matTxt.find()){
-								OAuthBasic.sendMsg("> " + elements.last().text());
+								OAuthBasic.sendMsg("> " + elements.last().text().replaceAll("&", "8"));
 							}
 							else {
-								OAuthBasic.sendMsg("[임시필터링] " + elements.last().text());
+								//OAuthBasic.sendMsg("[임시필터링] " + elements.last().text());
 							}
 						}
 					}
@@ -226,7 +226,7 @@ public class ParserScheduler {
 			Response searchBody = Jsoup
 				.connect("http://m.stock.daum.net/m/search/search.daum")
 				.data("name", searchWord)
-				.ignoreHttpErrors(true)
+				//.ignoreHttpErrors(true)
 				.method(Method.POST).execute();
 			
 			Document searchResult = searchBody.parse();
@@ -244,7 +244,7 @@ public class ParserScheduler {
 					
 					while(searchTr.hasNext()){
 						resultTr = searchTr.next();
-						searchResultMsg.append("\n" + resultTr.select("th abbr").attr("title")
+						searchResultMsg.append("\n" + resultTr.select("th abbr").attr("title").replaceAll("&", "8")
 								+ " (" + resultTr.select(".inp_check").attr("value") + ")");
 					}
 					
@@ -265,9 +265,9 @@ public class ParserScheduler {
 	 */
 	public void searchPrint(Document searchDoc){
 		Elements stockInfo = searchDoc.select(".item_idx_info");
-		String stockType = stockInfo.select("h2 .txt_kospi").text();
-		String stockName = stockInfo.select("h2 .link_name").text();
-		String stockCode = stockInfo.select("h2 .stock_code").text();
+		String stockType = stockInfo.select("h2 .txt_kospi").text().replaceAll("&", "8");
+		String stockName = stockInfo.select("h2 .link_name").text().replaceAll("&", "8");
+		String stockCode = stockInfo.select("h2 .stock_code").text().replaceAll("&", "8");
 		String stockPrice = stockInfo.select(".price").text();
 		String stockFluc = stockInfo.select(".price_fluc").text();
 		String stockRate = stockInfo.select(".rate_fluc").text();
